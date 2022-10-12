@@ -1,86 +1,90 @@
 import requests
 
 
-def predict_hh_rub_salary(sallaries):
+def predict_hh_rub_salary(salaries):
 
-		sallary_result = []
+    salary_average = []
 
-		for salary in sallaries:
-				if salary == None:
-						sallary_result.append(None)
-				elif salary['currency'] != 'RUR':
-						sallary_result.append(None)
-				elif salary['from'] !=None and salary['to'] !=None:
-						sallary_result.append((salary['from'] + salary['to'])/2)
-				elif salary['from'] !=None:
-						sallary_result.append(salary['from']*1.2)
-				else:
-						sallary_result.append(salary['to']*0.8)
+    for salary in salaries:
+        if not salary:
+            salary_average.append(None)
+        elif salary['currency'] != 'RUR':
+            salary_average.append(None)
+        elif salary['from'] and salary['to']:
+            salary_average.append((salary['from'] + salary['to'])/2)
+        elif salary['from']:
+            salary_average.append(salary['from']*1.2)
+        else:
+            salary_average.append(salary['to']*0.8)
 
-		return sallary_result
+    return salary_average
 
 
 def get_hh_vacancies(text, page):
 
-		url = 'https://api.hh.ru/vacancies/'
+    url = 'https://api.hh.ru/vacancies/'
 
-		payload = {
-				'text': text,
-				'period': 30,
-				'area':1,
-				'page': page,
-				'per_page':100,
-				'specialization': 1.221
-		}
+    area_id = 1
+    vacancies_for_page = 100
+    specialization_id = 1.221
+    time_period = 30
 
-		response = requests.get(url, params=payload)
-		response.raise_for_status()
+    payload = {
+        'text': text,
+        'period': time_period,
+        'area': area_id,
+        'page': page,
+        'per_page': vacancies_for_page,
+        'specialization': specialization_id
+    }
 
-		vacancies = response.json()['items']
+    response = requests.get(url, params=payload)
+    response.raise_for_status()
 
-		sallary_infos =[]
-		count = 0
+    vacancies = response.json()['items']
 
-		for vacany in vacancies:
-				sallary_infos.append(vacany['salary'])
-				count+=1
+    salaries = []
 
-		return sallary_infos, count
+    for vacancy in vacancies:
+        salaries.append(vacancy['salary'])
+
+    return salaries, len(vacancies)
 
 
-def get_hh_info(languages):
+def get_hh_statistic(languages):
 
-		languages_info = {}
+    hh_statistic = {}
+    pages=20
 
-		for language in languages:
+    for language in languages:
 
-				vacancy_info = {
-						'vacancies_found': 0
-				}
+        language_statistic = {
+            'vacancies_found': 0
+        }
 
-				vacancies_processed = 0
-				vacancies_average = 0
+        vacancies_processed = 0
+        vacancies_average = 0
 
-				for page in range(20):
+        for page in range(pages):
 
-						salary_for_language, vacancies_counter = get_hh_vacancies(language, page)
+            salary_for_language, vacancies_counter = get_hh_vacancies(language, page)
 
-						salary_average = predict_hh_rub_salary(salary_for_language)
+            hh_average_salary = predict_hh_rub_salary(salary_for_language)
 
-						for salary in salary_average:
-								if salary != None:
-										vacancies_processed+=1
-										vacancies_average += salary
+            for salary in hh_average_salary:
+                if salary:
+                    vacancies_processed += 1
+                    vacancies_average += salary
 
-						vacancy_info['vacancies_found'] += vacancies_counter
+            language_statistic['vacancies_found'] += vacancies_counter
 
-				vacancy_info['vacancies_processed'] = vacancies_processed
+        language_statistic['vacancies_processed'] = vacancies_processed
 
-				if vacancies_processed !=0:
-						vacancy_info['average_salary'] = int(vacancies_average/vacancies_processed)
-				else:
-						vacancy_info['average_salary'] = 0
+        if vacancies_processed:
+            language_statistic['average_salary'] = int(vacancies_average/vacancies_processed)
+        else:
+            language_statistic['average_salary'] = 0
 
-				languages_info[language] = vacancy_info
+        hh_statistic[language] = language_statistic
 
-		return languages_info
+    return hh_statistic

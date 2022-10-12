@@ -62,8 +62,8 @@ def get_hh_statistic(languages):
             'vacancies_found': 0
         }
 
-        vacancies_processed = 0
-        vacancies_average = 0
+        processed_vacancies = 0
+        average_vacancies = 0
 
         for page in range(pages):
 
@@ -73,15 +73,15 @@ def get_hh_statistic(languages):
 
             for salary in hh_average_salary:
                 if salary:
-                    vacancies_processed += 1
-                    vacancies_average += salary
+                    processed_vacancies += 1
+                    average_vacancies += salary
 
             language_statistic['vacancies_found'] += vacancies_counter
 
-        language_statistic['vacancies_processed'] = vacancies_processed
+        language_statistic['vacancies_processed'] = processed_vacancies
 
-        if vacancies_processed:
-            language_statistic['average_salary'] = int(vacancies_average/vacancies_processed)
+        if processed_vacancies:
+            language_statistic['average_salary'] = int(average_vacancies/processed_vacancies)
         else:
             language_statistic['average_salary'] = 0
 

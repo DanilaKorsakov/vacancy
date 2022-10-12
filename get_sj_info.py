@@ -57,9 +57,9 @@ def get_sj_statistic(languages, sj_secret_key):
             'vacancies_found': 0
         }
 
-        vacancies_found = 0
-        vacancies_processed = 0
-        vacancies_average = 0
+        found_vacancies = 0
+        processed_vacancies = 0
+        average_vacancies = 0
 
         for page in range(pages):
             vacancies = get_sj_vacancies(key, language, page)
@@ -67,15 +67,15 @@ def get_sj_statistic(languages, sj_secret_key):
 
             for salary in sj_average_salary:
                 if salary:
-                    vacancies_processed+=1
-                    vacancies_average += salary
-                vacancies_found += 1
+                    processed_vacancies+=1
+                    average_vacancies += salary
+                found_vacancies += 1
 
-        language_statistic['vacancies_found'] = vacancies_found
-        language_statistic['vacancies_processed'] = vacancies_processed
+        language_statistic['vacancies_found'] = found_vacancies
+        language_statistic['vacancies_processed'] = processed_vacancies
 
-        if vacancies_processed:
-            language_statistic['average_salary'] = int(vacancies_average/vacancies_processed)
+        if processed_vacancies:
+            language_statistic['average_salary'] = int(average_vacancies/processed_vacancies)
         else:
             language_statistic['average_salary'] = 0
 

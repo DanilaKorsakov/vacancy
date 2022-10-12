@@ -28,20 +28,20 @@ def get_sj_vacancies(key, keyword, page):
 
 def predict_rub_salary_for_superJob(vacancies):
 
-    salary_average = []
+    average_salaries = []
 
     for vacancy in vacancies:
 
         if vacancy['currency'] != 'rub':
-            salary_average.append(None)
+            average_salaries.append(None)
         elif vacancy['payment_from'] and vacancy['payment_to']:
-            salary_average.append((vacancy['payment_from'] + vacancy['payment_to'])/2)
+            average_salaries.append((vacancy['payment_from'] + vacancy['payment_to'])/2)
         elif vacancy['payment_from']:
-            salary_average.append(vacancy['payment_from']*1.2)
+            average_salaries.append(vacancy['payment_from']*1.2)
         else:
-            salary_average.append(vacancy['payment_to']*0.8)
+            average_salaries.append(vacancy['payment_to']*0.8)
 
-    return salary_average
+    return average_salaries
 
 
 def get_sj_statistic(languages, sj_secret_key):

@@ -3,21 +3,21 @@ import requests
 
 def predict_hh_rub_salary(salaries):
 
-    salary_average = []
+    average_salaries = []
 
     for salary in salaries:
         if not salary:
-            salary_average.append(None)
+            average_salaries.append(None)
         elif salary['currency'] != 'RUR':
-            salary_average.append(None)
+            average_salaries.append(None)
         elif salary['from'] and salary['to']:
-            salary_average.append((salary['from'] + salary['to'])/2)
+            average_salaries.append((salary['from'] + salary['to'])/2)
         elif salary['from']:
-            salary_average.append(salary['from']*1.2)
+            average_salaries.append(salary['from']*1.2)
         else:
-            salary_average.append(salary['to']*0.8)
+            average_salaries.append(salary['to']*0.8)
 
-    return salary_average
+    return average_salaries
 
 
 def get_hh_vacancies(text, page):

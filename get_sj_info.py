@@ -1,5 +1,7 @@
 import requests
 
+from get_average_salaries import get_average_salaries
+
 
 def get_sj_vacancies(key, keyword, page):
 
@@ -34,12 +36,8 @@ def predict_rub_salary_for_superJob(vacancies):
 
         if vacancy['currency'] != 'rub':
             average_salaries.append(None)
-        elif vacancy['payment_from'] and vacancy['payment_to']:
-            average_salaries.append((vacancy['payment_from'] + vacancy['payment_to'])/2)
-        elif vacancy['payment_from']:
-            average_salaries.append(vacancy['payment_from']*1.2)
         else:
-            average_salaries.append(vacancy['payment_to']*0.8)
+            average_salaries.append(get_average_salaries(vacancy['payment_from'], vacancy['payment_to']))
 
     return average_salaries
 

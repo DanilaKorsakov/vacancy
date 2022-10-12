@@ -1,5 +1,7 @@
 import requests
 
+from get_average_salaries import get_average_salaries
+
 
 def predict_hh_rub_salary(salaries):
 
@@ -10,12 +12,8 @@ def predict_hh_rub_salary(salaries):
             average_salaries.append(None)
         elif salary['currency'] != 'RUR':
             average_salaries.append(None)
-        elif salary['from'] and salary['to']:
-            average_salaries.append((salary['from'] + salary['to'])/2)
-        elif salary['from']:
-            average_salaries.append(salary['from']*1.2)
         else:
-            average_salaries.append(salary['to']*0.8)
+            average_salaries.append(get_average_salaries(salary['from'], salary['to']))
 
     return average_salaries
 

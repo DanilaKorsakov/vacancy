@@ -18,12 +18,12 @@ def create_table(title, languages_info):
         ]
     ]
     
-    for language, vacancies_info in languages_info.items():
+    for language, vacancies_statistic in languages_info.items():
         vacancies_table.append([
           language,
-          vacancies_info["vacancies_found"],
-          vacancies_info["vacancies_processed"],
-          vacancies_info["average_salary"]
+          vacancies_statistic["vacancies_found"],
+          vacancies_statistic["vacancies_processed"],
+          vacancies_statistic["average_salary"]
         ])
       
     table = AsciiTable(vacancies_table)
